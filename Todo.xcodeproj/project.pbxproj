@@ -87,11 +87,11 @@
 		9AB3FAF91AD8E7A500F0C92E /* Todo */ = {
 			isa = PBXGroup;
 			children = (
-				9AB3FB291ADA118600F0C92E /* Dispatcher.swift */,
 				9AB3FAFC1AD8E7A500F0C92E /* AppDelegate.swift */,
 				9AB3FB061AD8E7A500F0C92E /* Images.xcassets */,
 				9AB3FAFA1AD8E7A500F0C92E /* Supporting Files */,
 				9AB3FB1F1AD8E8AF00F0C92E /* TodoStore.swift */,
+				9AB3FB291ADA118600F0C92E /* Dispatcher.swift */,
 				9AB3FB211AD92C9300F0C92E /* TodoItemsTableViewController.swift */,
 				9AB3FB2B1ADA375800F0C92E /* TodoActions.swift */,
 				9A285F8F1C11747C00069F97 /* Todo.xcdatamodeld */,

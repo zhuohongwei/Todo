@@ -8,27 +8,35 @@
 
 import Foundation
 
-let TodoAction = "action"
+internal let TodoAction = "action"
+internal let TodoItemTitle = "title"
+internal let TodoItemId = "item_id"
 
-let TodoActionCreate = "action_create"
-let TodoActionDelete = "action_delete"
-let TodoActionToggleCompleted = "action_toggle_completed"
-
-let TodoItemTitle = "title"
-let TodoItemId = "item_id"
+internal let TodoActionCreate = "action_create"
+internal let TodoActionDelete = "action_delete"
+internal let TodoActionToggleCompleted = "action_toggle_completed"
 
 class TodoActions {
     
     class func create(title:String) {
-        Dispatcher.sharedInstance.dispatch([TodoAction:TodoActionCreate, TodoItemTitle:title])
+        Dispatcher.sharedInstance.dispatch([
+            TodoAction: TodoActionCreate,
+            TodoItemTitle: title
+        ])
     }
 
     class func delete(itemId:String) {
-        Dispatcher.sharedInstance.dispatch([TodoAction:TodoActionDelete, TodoItemId:itemId])
+        Dispatcher.sharedInstance.dispatch([
+            TodoAction: TodoActionDelete,
+            TodoItemId: itemId
+        ])
     }
     
     class func toggleCompleted(itemId:String) {
-        Dispatcher.sharedInstance.dispatch([TodoAction:TodoActionToggleCompleted, TodoItemId:itemId])
+        Dispatcher.sharedInstance.dispatch([
+            TodoAction: TodoActionToggleCompleted,
+            TodoItemId: itemId
+        ])
     }
     
 }

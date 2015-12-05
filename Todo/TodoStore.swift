@@ -42,41 +42,73 @@ class TodoStore {
             return
         }
         
-        Dispatcher.sharedInstance.register { (payload) -> Void in
-            
-            if payload[TodoAction] == nil {
+        Dispatcher.sharedInstance.register { payload in
+
+            guard let action = payload[TodoAction] as? String else {
                 return
             }
-            
-            let action = payload[TodoAction] as? String
-            
-            if action == TodoActionCreate {
-                if let title = payload[TodoItemTitle] as? String {
-                    self.createTodoItem(title, completion: { (saved, _) -> Void in
-                        if saved != nil && saved! as! Bool {
-                            self.notifyTodoItemCreated()
-                        }
-                    })
+
+            switch action {
+
+            case TodoActionCreate:
+
+                guard let title = payload[TodoItemTitle] as? String else {
+                    return
                 }
-    
-            } else if action == TodoActionDelete {
-                if let itemId = payload[TodoItemId] as? String {
-                    self.deleteTodoItem(itemId, completion: { (saved, _) -> Void in
-                        if saved != nil && saved! as! Bool {
-                            self.notifyTodoItemDeleted()
-                        }
-                    })
+
+                self.createTodoItem(title, completion: { (result, error) in
+
+                    guard let saved = result as? Bool else {
+                        return
+                    }
+
+                    if saved {
+                        self.notifyTodoItemCreated()
+                    }
+
+                })
+
+            case TodoActionDelete:
+
+                guard let itemId = payload[TodoItemId] as? String else {
+                    return
                 }
-            
-            } else if action == TodoActionToggleCompleted {
-                if let itemId = payload[TodoItemId] as? String {
-                    self.toggleCompleted(itemId, completion: { (saved, _) -> Void in
-                        if saved != nil && saved! as! Bool {
-                            self.notifyTodoItemToggleCompleted()
-                        }
-                    })
+
+                self.deleteTodoItem(itemId, completion: { (result, error) in
+
+                    guard let deleted = result as? Bool else {
+                        return
+                    }
+
+                    if deleted {
+                        self.notifyTodoItemDeleted()
+                    }
+
+                })
+
+            case TodoActionToggleCompleted:
+
+                guard let itemId = payload[TodoItemId] as? String else {
+                    return
                 }
+
+                self.toggleCompleted(itemId, completion: { (result, error) in
+
+                    guard let toggled = result as? Bool else {
+                        return
+                    }
+
+                    if toggled {
+                        self.notifyTodoItemToggleCompleted()
+                    }
+
+                })
+
+            default:
+                return
+
             }
+
         }
         
         registered = true
@@ -95,6 +127,7 @@ class TodoStore {
     }
     
     func allTodoItems(completion: MCompletionWithResult?) {
+
         readAsynchronously { moc in
             
             let request = NSFetchRequest(entityName: EntityNameTodoItem)
@@ -154,7 +187,6 @@ class TodoStore {
     
     func deleteTodoItem(itemId: String, completion: MCompletionWithResult?) {
 
-
         writeAsychronously({ moc in
 
             let request = NSFetchRequest(entityName: EntityNameTodoItem)
@@ -185,7 +217,6 @@ class TodoStore {
     }
     
     func toggleCompleted(itemId: String, completion: MCompletionWithResult?) {
-
 
         writeAsychronously({ moc in
 
@@ -390,38 +421,46 @@ class TodoStore {
 extension TodoStore {
 
     func writeAsychronously(operation:(NSManagedObjectContext) -> (), completion: MCompletion?) {
-        if let moc = self.privateManagedObjectContext {
-            moc.performBlock({
-                operation(moc)
 
-                do {
-
-                    if moc.hasChanges {
-                        try moc.save()
-                    }
-
-                    dispatch_async(dispatch_get_main_queue()) {
-                        completion?(error: nil)
-                    }
-
-                } catch {
-                    NSLog("Failed to save changes")
-
-                    dispatch_async(dispatch_get_main_queue()) {
-                        completion?(error: .UnsuccessfulWrite)
-                    }
-
-                }
-            })
+        guard let moc = self.privateManagedObjectContext else {
+            return
         }
+
+        moc.performBlock({
+            operation(moc)
+
+            do {
+
+                if moc.hasChanges {
+                    try moc.save()
+                }
+
+                dispatch_async(dispatch_get_main_queue()) {
+                    completion?(error: nil)
+                }
+
+            } catch {
+                NSLog("Failed to save changes")
+
+                dispatch_async(dispatch_get_main_queue()) {
+                    completion?(error: .UnsuccessfulWrite)
+                }
+
+            }
+        })
+
     }
 
     func readAsynchronously(operation:(NSManagedObjectContext)->Void) {
-        if let moc = self.privateManagedObjectContext {
-            moc.performBlock({
-                operation(moc)
-            })
+
+        guard let moc = self.privateManagedObjectContext else {
+            return
         }
+
+        moc.performBlock({
+            operation(moc)
+        })
+
     }
 }
 
