@@ -8,26 +8,22 @@
 
 import Foundation
 
-typealias Payload = [NSObject:AnyObject]
-typealias PayloadHandler = (Payload)->Void
-
-private let _sharedInstance = Dispatcher()
+typealias Payload = [NSObject: AnyObject]
+typealias PayloadHandler = (Payload) -> ()
 
 class Dispatcher {
-    
-    class var sharedInstance:Dispatcher {
-        return _sharedInstance
-    }
+
+    static let sharedInstance = Dispatcher()
     
     var callbacks = [PayloadHandler]()
 
-    func dispatch(payload:Payload) {
+    func dispatch(payload: Payload) {
         for callback in callbacks {
             callback(payload)
         }
     }
     
-    func register(handler:PayloadHandler) {
+    func register(handler: PayloadHandler) {
         callbacks.append(handler)
     }
 }

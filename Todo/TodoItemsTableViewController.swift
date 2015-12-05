@@ -51,7 +51,7 @@ class TodoItemsTableViewController: UITableViewController {
         }
     }
     
-    func createTodoItem(sender:AnyObject) {
+    func createTodoItem(sender: AnyObject) {
 
         let alert = UIAlertController(
             title: "New Todo Item",

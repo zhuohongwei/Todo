@@ -26,9 +26,9 @@ typealias MCompletionWithResult     = (result: Any?, error: ModelError?) -> ()
 
 private let EntityNameTodoItem = "TodoItem"
 
-let TodoItemDeletedNotification = "todo_item_deleted"
-let TodoItemCreatedNotification = "todo_item_created"
-let TodoItemToggleCompletedNotification = "todo_item_toggle_completed"
+internal let TodoItemDeletedNotification = "todo_item_deleted"
+internal let TodoItemCreatedNotification = "todo_item_created"
+internal let TodoItemToggleCompletedNotification = "todo_item_toggle_completed"
 
 class TodoStore {
 
